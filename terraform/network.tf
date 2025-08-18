@@ -99,3 +99,55 @@ resource "aws_route_table_association" "private_2" {
     subnet_id      = aws_subnet.private_2.id
     route_table_id = aws_route_table.private.id
 }
+
+#Security Groups
+# ALB-SG
+resource "aws_security_group" "alb-sg" {
+    name = "${var.Name_prefix}-alb-sg"
+    description = "ALB security group"
+    vpc_id = aws_vpc.projVPC.id
+    tags = {
+        Name = "${var.Name_prefix}-alb-sg"
+    }
+}
+# ALB-SG Allow inbound on port 80 from anywhere
+resource "aws_vpc_security_group_ingress_rule" "anywhere_to_alb" {
+    security_group_id = aws_security_group.alb-sg.id
+    description = "Allow traffic on port 80 from anywhere"
+    cidr_ipv4 = "0.0.0.0/0"
+    from_port = 80 
+    ip_protocol = "tcp"
+    to_port = 80
+}
+# ALB-SG Allow egress to anywhere
+resource "aws_vpc_security_group_egress_rule" "alb_egress" {
+    security_group_id = aws_security_group.alb-sg.id
+    description = "Allow egress to anywhere"
+    cidr_ipv4 = "0.0.0.0/0"
+    ip_protocol = "-1"
+}
+# ECS-SG
+resource "aws_security_group" "ecs-sg" {
+    name = "${var.Name_prefix}-ecs-sg"
+    description = "ECS tasks security group"
+    vpc_id = aws_vpc.projVPC.id
+    tags = {
+        Name = "${var.Name_prefix}-ecs-sg"
+    }
+}
+# ECS-SG Allow inbound on port 3000 from ALB
+resource "aws_vpc_security_group_ingress_rule" "ecs_from_alb" {
+    security_group_id = aws_security_group.ecs-sg.id
+    description = "Allow traffic on port 3000 from ALB"
+    referenced_security_group_id = aws_security_group.alb-sg.id
+    from_port = "${var.container_port}"
+    ip_protocol = "tcp"
+    to_port = "${var.container_port}"
+}
+# ECS-SG Allow egress to anywhere
+resource "aws_vpc_security_group_egress_rule" "ecs_egress" {
+    security_group_id = aws_security_group.ecs-sg.id
+    description = "Allow egress to anywhere"
+    cidr_ipv4 = "0.0.0.0/0"
+    ip_protocol = "-1"
+}
