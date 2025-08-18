@@ -30,22 +30,12 @@ variable "private_subnet_cidr2" {
 }
 
 #ECS
-
+variable "image_uri" {
+  description = "Docker image URI for the ECS task"
+  type        = string
+  default     = "571600847121.dkr.ecr.us-east-1.amazonaws.com/devops-project-1"
+}
 variable "container_port" {
   type    = number
   default = 3000
-}
-variable "desired_count" {
-  type    = number
-  default = 2
-}
-variable "task_cpu" {
-  description = "Fargate CPU (valid: 256, 512, 1024, 2048, 4096)"
-  type        = number
-  default     = 512
-}
-variable "task_memory" {
-  description = "Fargate Memory in MiB (valid pairs with CPU, e.g. 1024 for 512 CPU)"
-  type        = number
-  default     = 1024
 }
