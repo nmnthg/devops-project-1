@@ -140,9 +140,9 @@ resource "aws_vpc_security_group_ingress_rule" "ecs_from_alb" {
     security_group_id = aws_security_group.ecs-sg.id
     description = "Allow traffic on port 3000 from ALB"
     referenced_security_group_id = aws_security_group.alb-sg.id
-    from_port = "${var.container_port}"
+    from_port = var.container_port
     ip_protocol = "tcp"
-    to_port = "${var.container_port}"
+    to_port = var.container_port
 }
 # ECS-SG Allow egress to anywhere
 resource "aws_vpc_security_group_egress_rule" "ecs_egress" {
