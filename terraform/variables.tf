@@ -35,6 +35,13 @@ variable "image_uri" {
   type        = string
   default     = "571600847121.dkr.ecr.us-east-1.amazonaws.com/devops-project-1"
 }
+
+variable "image_tag" {
+  description = "Docker image tag to deploy"
+  type        = string
+  default     = "latest"
+}
+
 variable "container_port" {
   type    = number
   default = 3000
