@@ -1,4 +1,4 @@
-name: Build and Push to ECR
+name: Build and Deploy
 
 on:
   workflow_dispatch:
@@ -25,28 +25,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # - name: Log in to Amazon ECR
-      #   id: login-ecr
-      #   uses: aws-actions/amazon-ecr-login@v2
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-      # - name: Compute tags
-      #   id: vars
-      #   run: echo "SHA=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      - name: Compute tags
+        id: vars
+        run: echo "SHA=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
-      # - name: Build image
-      #   run: |
-      #     docker build \
-      #       --label org.opencontainers.image.source=${{ github.repository }} \
-      #       --label org.opencontainers.image.revision=${{ github.sha }} \
-      #       --label org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
-      #       -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.vars.outputs.SHA }} \
-      #       -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest \
-      #       .
+      - name: Build image
+        run: |
+          docker build \
+            --label org.opencontainers.image.source=${{ github.repository }} \
+            --label org.opencontainers.image.revision=${{ github.sha }} \
+            --label org.opencontainers.image.created=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+            -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.vars.outputs.SHA }} \
+            -t ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest \
+            .
 
-      # - name: Push image
-      #   run: |
-      #     docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.vars.outputs.SHA }}
-      #     docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+      - name: Push image
+        run: |
+          docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.vars.outputs.SHA }}
+          docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -56,10 +56,6 @@ jobs:
       - name: Terraform init
         working-directory: terraform
         run: terraform init -input=false
-
-      - name: Terraform plan
-        working-directory: terraform
-        run: terraform plan -input=false
 
       - name: Terraform apply (deploy new image)
         working-directory: terraform
