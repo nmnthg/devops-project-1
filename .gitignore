@@ -40,5 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-#terraform provider data
+#terraform
 /terraform/.terraform/providers/registry.terraform.io/*
+*.tfstate
+*.tfstate.*
+terraform.tfstate.d/
