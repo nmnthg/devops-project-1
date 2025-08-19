@@ -1,19 +1,17 @@
 name: Build and Push to ECR
 
 on:
-   push:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   ECR_REPOSITORY: devops-project-1
-  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  build and deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -56,11 +54,11 @@ jobs:
           terraform_version: 1.9.5
 
       - name: Terraform init
-        working-directory: terraform
         run: terraform init -input=false
 
-      - name: Terraform apply (deploy new image)
-        working-directory: terraform
-        env:
-          TF_VAR_image_tag: ${{ steps.vars.outputs.SHA }}
-        run: terraform apply -auto-approve -input=false
+      - name: Terraform plan
+        run: terraform plan -input=false
+      # - name: Terraform apply (deploy new image)
+      #   env:
+      #     TF_VAR_image_tag: ${{ steps.vars.outputs.SHA }}
+      #   run: terraform apply -auto-approve -input=false
