@@ -2,13 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   return NextResponse.json({
-    message: "Hello from the API!",
-    timestamp: new Date().toISOString(),
-    status: "success",
-    data: {
-      text: "This is some sample text served from the API route",
-      version: "1.0.0"
-    }
+    message: "Hello Aman. Congrats on CVE-2025-54554!",
   });
 }
 
