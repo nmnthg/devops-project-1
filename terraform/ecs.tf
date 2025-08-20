@@ -35,7 +35,7 @@ resource "aws_ecs_service" "app" {
   name             = "${var.Name_prefix}-svc"
   cluster          = aws_ecs_cluster.main-cluster.id
   task_definition  = aws_ecs_task_definition.app.arn
-  desired_count    = 0
+  desired_count    = 1
   launch_type      = "FARGATE"
   platform_version = "1.4.0"
 
