@@ -64,3 +64,23 @@ jobs:
         env:
           TF_VAR_image_tag: ${{ steps.vars.outputs.SHA }}
         run: terraform apply -auto-approve -input=false
+
+      - name: Get ALB DNS name
+        working-directory: terraform
+        id: alb-dns
+        run: |
+          ALB_DNS=$(terraform output -raw alb_dns_name)
+          echo "alb_dns_name=$ALB_DNS" >> $GITHUB_OUTPUT
+          echo "ALB DNS: $ALB_DNS"
+
+      - name: Health check - Test homepage
+        run: |
+          echo "Testing homepage at http://${{ steps.alb-dns.outputs.alb_dns_name }}/"
+          curl -f -s -o /dev/null -w "HTTP Status: %{http_code}\n" \
+            "http://${{ steps.alb-dns.outputs.alb_dns_name }}/" || exit 1
+
+      - name: Health check - Test API
+        run: |
+          echo "Testing API at http://${{ steps.alb-dns.outputs.alb_dns_name }}/api/hello"
+          curl -f -s -o /dev/null -w "HTTP Status: %{http_code}\n" \
+            "http://${{ steps.alb-dns.outputs.alb_dns_name }}/api/hello" || exit 1

@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🚀 Next.js CI/CD Pipeline with Docker, AWS, and Terraform  
 
-## Getting Started
+This project demonstrates a complete **CI/CD pipeline** for a **Next.js React application**, containerized with **Docker** and deployed to **AWS** using **Terraform** for infrastructure provisioning.  
 
-First, run the development server:
+The application includes both a **homepage UI** and an **API layer**. On every code commit:  
+- The app is built into a **Docker image** and pushed to **Amazon ECR**.  
+- **Terraform** provisions the AWS infrastructure, including:  
+  - Public and private subnets  
+  - Application Load Balancer (ALB)  
+  - AWS Fargate for serverless container orchestration  
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This setup ensures **scalability, reliability, and high availability** while streamlining deployment workflows.  
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🚢 Deployment Workflow
+1. **Commit code** → triggers CI/CD pipeline  
+2. **Docker build** → image pushed to **Amazon ECR**  
+3. **Terraform apply** → provisions AWS infrastructure (VPC, subnets, ALB, Fargate)  
+4. **Application deployed** → available behind **ALB endpoint**  
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🌐 Infrastructure Overview
+- **VPC** with public & private subnets  
+- **Application Load Balancer** for incoming traffic  
+- **ECS Fargate tasks** running the containerized app  
+- **Amazon ECR** for storing Docker images  
+- **Terraform** for managing all resources as code  
